@@ -11,7 +11,6 @@
 /** Define static routes. */
 
 // The default Routing
-//Route::get('/', 'Welcome@index');
 Route::get('/', 'Chansons@index');
 
 //Route::get('subpage', 'Welcome@subPage');
@@ -20,5 +19,4 @@ Route::get('/', 'Chansons@index');
 
 Route::post('creechanson', 'Chansons@creechanson');
 Route::post('playlist/cree', 'Chansons@creeplaylist');
-//Route::post('playlist/cree', 'Welcome@creeplaylist');
 /** End default Routes */

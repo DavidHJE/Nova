@@ -51,6 +51,7 @@ class Chansons extends Controller {
         if (Auth::id() == false) {
             return Redirect::to('/login');
         }
+
         if (Input::has('nom') &&
             Input::has('style') &&
             Input::hasFile('chanson') &&
@@ -66,8 +67,15 @@ class Chansons extends Controller {
                 $c->duree="";
                 $c-> post_date = date('Y-m-d h:i:s');
                 $c->save();
-                return Redirect::to('/');
         }
+
+/*        if(\Nova\Support\Facades\Request::ajax()) {
+            $all = Chanson::whereRaw('utilisateur_id=?', array(Auth::id()))->get();
+            return View::fetch('Chansons/LesChansons', array('all'=>$all));
+            return Input::get('nom');
+        }*/
+
+        return Redirect::to('/');
     }
 
     public function creeplaylist() {
@@ -82,10 +90,8 @@ class Chansons extends Controller {
         }
 
         if(\Nova\Support\Facades\Request::ajax()) {
-            /*$playlists = Playlist::whereRaw('utilisateur_id=?', array(Auth::id()))->get();
-            return View::fetch('Chansons/Playlist', array('playlists'=>$playlists));*/
-            echo "vous avez envoyé : ".$_GET["login"]."comme login<br />";
-            echo "vous avez envoyé : ".$_GET["mdp"]."comme mot de passe<br />";
+            $playlists = Playlist::whereRaw('utilisateur_id=?', array(Auth::id()))->get();
+            return View::fetch('Chansons/Playlist', array('playlists'=>$playlists));
     	}
             
         return Redirect::to('/');
