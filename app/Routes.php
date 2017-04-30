@@ -19,4 +19,10 @@ Route::get('/', 'Chansons@index');
 
 Route::post('creechanson', 'Chansons@creechanson');
 Route::post('playlist/cree', 'Chansons@creeplaylist');
+
+Route::get('formulaire/music', 'Chansons@formmudic');
+
+Route::get('utilisateur/{id}', 'Chansons@compte') -> where('id', '[0-9]+');
+
+Route::get('addtoplaylist/{plid}/{chid}', 'Chansons@addtoplaylist') -> where('plid', '[0-9]+') -> where('chid', '[0-9]+');
 /** End default Routes */

@@ -36,7 +36,8 @@ class Chansons extends Controller {
 
     	$all = Chanson::all();
     	if (Auth::id()) 
-    	    $playlists = Playlist::whereRaw('utilisateur_id=?', array(Auth::id()))->get();
+    	    //$playlists = Playlist::whereRaw('utilisateur_id=?', array(Auth::id()))->get();
+             $playlists = Playlist::all();
     	else
     	    $playlists = false;
 
@@ -58,6 +59,7 @@ class Chansons extends Controller {
             Input::file('chanson')->isValid()) {
                 $file = str_replace(' ', '', Input::file('chanson')->getClientOriginalName());
                 $f = Input::file("chanson")->move("assets/chansons/".Auth::user()->username, $file);
+                echo "<script>console.log($f);</script>";
 
                 $c = new Chanson();
                 $c->nom = Input::get('nom');
@@ -66,7 +68,9 @@ class Chansons extends Controller {
                 $c->utilisateur_id = Auth::id();
                 $c->duree="";
                 $c-> post_date = date('Y-m-d h:i:s');
+                echo "<script>console.log($c);</script>";
                 $c->save();
+
         }
 
 /*        if(\Nova\Support\Facades\Request::ajax()) {
@@ -74,8 +78,9 @@ class Chansons extends Controller {
             return View::fetch('Chansons/LesChansons', array('all'=>$all));
             return Input::get('nom');
         }*/
+        
 
-        return Redirect::to('/');
+        //return Redirect::to('/');
     }
 
     public function creeplaylist() {
@@ -90,10 +95,36 @@ class Chansons extends Controller {
         }
 
         if(\Nova\Support\Facades\Request::ajax()) {
-            $playlists = Playlist::whereRaw('utilisateur_id=?', array(Auth::id()))->get();
+            //$playlists = Playlist::whereRaw('utilisateur_id=?', array(Auth::id()))->get();
+            $playlists = Playlist::all();
             return View::fetch('Chansons/Playlist', array('playlists'=>$playlists));
     	}
             
         return Redirect::to('/');
 	}
+
+    public function compte($id) {
+        if(Auth::id() == false)
+            return Redirect::to('/login');
+
+        $chansons = Chanson::whereRaw('utilisateur_id=?',array($id))->get();
+        $playlist = Playlist::whereRaw('utilisateur_id=?', array($id))->get();
+        return View::make('Chansons/Compte')
+            ->shares('title', __('Votre Compte'))
+            ->with('all', $chansons)
+            ->with('playlists', $playlist);
+    }
+
+    public function addtoplaylist($plid,$chid){
+        $pl = Playlist::find($plid);
+        $pl->chansons()->attach($chid);
+    }
+
+    public function formmudic() {
+        if(Auth::id() == false)
+            return Redirect::to('/login');
+
+        return View::make('Chansons/Formaddmusic')
+        ->shares('title', __('Ajout music'));
+    }
 }
